@@ -46,7 +46,7 @@ export default class {
         .bills()
         .list()
         .then((snapshot) => {
-          const antiChrono = (a, b) => (a.date < b.date ? 1 : -1);
+          //const antiChrono = (a, b) => (a.date < b.date ? 1 : -1);
           snapshot = snapshot.filter(function (a) {
             return a.name !== null /*&& a.fileName !== "null"*/;
           });
@@ -56,11 +56,11 @@ export default class {
             }
           });
           const bills = snapshot.map((doc) => {
-            snapshot.sort(antiChrono);
+            //snapshot.sort(antiChrono);
             try {
               return {
                 ...doc,
-                date: formatDate(doc.date),
+                date: /*formatDate(doc.date)*/ doc.date,
                 status: formatStatus(doc.status),
               };
             } catch (e) {
