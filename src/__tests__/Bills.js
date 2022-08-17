@@ -2,12 +2,14 @@
  * @jest-environment jsdom
  */
 
-import { screen, waitFor } from "@testing-library/dom";
+import { fireEvent, screen, waitFor } from "@testing-library/dom";
 import BillsUI from "../views/BillsUI.js";
 import { bills } from "../fixtures/bills.js";
 import { ROUTES, ROUTES_PATH } from "../constants/routes.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
 import mockStore from "../__mocks__/store";
+import Bills from "../containers/Bills.js";
+import userEvent from "@testing-library/user-event";
 
 import router from "../app/Router.js";
 
@@ -27,7 +29,7 @@ describe("Given I am connected as an employee", () => {
     });
   });
   describe("When I am on Bills Page", () => {
-    test("Then bill icon in vertical layout should be highlighted", async () => {
+    test("Then, bill icon in vertical layout should be highlighted", async () => {
       Object.defineProperty(window, "localStorage", {
         value: localStorageMock,
       });
@@ -47,7 +49,7 @@ describe("Given I am connected as an employee", () => {
       //to-do write expect expression
       expect(windowIcon);
     });
-    test("Then bills should be ordered from earliest to latest", () => {
+    test("Then, bills should be ordered from earliest to latest", () => {
       document.body.innerHTML = BillsUI({ data: bills });
       const dates = screen
         .getAllByText(
@@ -59,13 +61,46 @@ describe("Given I am connected as an employee", () => {
       expect(dates).toEqual(datesSorted);
     });
   });
+  describe("When I click on the icon eye", () => {
+    test("Then, a modale should open", () => {
+      document.body.innerHTML = BillsUI({ data: bills });
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname });
+      };
+      const bill = new Bills({
+        document,
+        onNavigate,
+      });
+      const eyeIcon = screen.getAllByTestId("icon-eye")[0];
+      const handleClickIconEye = jest.fn(bill.handleClickIconEye(eyeIcon));
+      eyeIcon.addEventListener("click", handleClickIconEye);
+      fireEvent.click(eyeIcon);
+      expect(handleClickIconEye).toHaveBeenCalled();
+      const modale = screen.getByTestId("modaleFile");
+      expect(modale).toBeTruthy;
+    });
+  });
+  describe("When I click on the button NewBill", () => {
+    test("Then, it should render the page NewBill", () => {
+      document.body.innerHTML = BillsUI({ data: bills });
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname });
+      };
+      Object.defineProperty(window, "localstorage", {
+        value: localStorageMock,
+      });
+      window.localStorage.setItem("user", JSON.stringify({ type: "Employee" }));
+      const bill = new Bills({ document, onNavigate });
+      const handleClickNewBill = jest.fn(bill.handleClickNewBill);
+      const buttonNewBill = screen.getByTestId("btn-new-bill");
+      buttonNewBill.addEventListener("click", handleClickNewBill);
+      userEvent.click(buttonNewBill);
+      expect(handleClickNewBill).toHaveBeenCalled();
+    });
+  });
 });
 
-//TODO: cliquer sur icon eye => open modale avec justificatif
-//TODO: cliquer sur button "New Bill" => renvoyer vers ROUTE "new bill"
-//TODO: si justificatif dans modal est null => changer image Bill justificatif
-
-// test d'intégration GET employee
+/* test d'intégration GET employee
 describe("Given I am a user connected as an employee", () => {
   describe("When I navigate on Bills Page", () => {
     test("fetches bills from mock API GET", async () => {
@@ -130,4 +165,4 @@ describe("Given I am a user connected as an employee", () => {
       });
     });
   });
-});
+});*/

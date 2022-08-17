@@ -21,14 +21,17 @@ const row = (bill) => {
 
 const rows = (data) => {
   if (data && data.length) {
-    data.sort((a, b) => (a.date < b.date ? 1 : -1));
+    console.log(data);
+    console.log(data.length);
+    const antiChrono = (a, b) => (a.date < b.date ? 1 : -1);
+    data.sort(antiChrono);
   }
   return data && data.length ? data.map((bill) => row(bill)).join("") : "";
 };
 
 export default ({ data: bills, loading, error }) => {
   const modal = () => `
-    <div class="modal fade" id="modaleFile" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal fade" id="modaleFile" data-testid="modaleFile" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -59,7 +62,7 @@ export default ({ data: bills, loading, error }) => {
           <button type="button" data-testid='btn-new-bill' class="btn btn-primary">Nouvelle note de frais</button>
         </div>
         <div id="data-table">
-        <table id="example" class="table table-striped" style="width:100%">
+        <table  id="example" class="table table-striped" style="width:100%">
           <thead>
               <tr>
                 <th>Type</th>

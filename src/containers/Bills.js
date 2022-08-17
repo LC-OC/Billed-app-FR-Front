@@ -32,7 +32,8 @@ export default class {
       .html(
         `<div style='text-align: center;' class="bill-proof-container"><img id="billNullImg" width=${imgWidth} src=${billUrl} alt="Bill" /></div>`
       );
-    $("#modaleFile").modal("show");
+    if (typeof $("#modaleFile").modal === "function")
+      $("#modaleFile").modal("show");
     if (billUrl == "http://localhost:5678/null") {
       let imgBillError = document.getElementById("billNullImg");
       imgBillError.src = "";
