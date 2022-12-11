@@ -10,7 +10,7 @@ import { localStorageMock } from "../__mocks__/localStorage.js";
 import mockStore from "../__mocks__/store";
 import userEvent from "@testing-library/user-event";
 import router from "../app/Router.js";
-import store from "../__mocks__/store";
+import Store from "../__mocks__/Store";
 import BillsUI from "../views/BillsUI.js";
 
 jest.mock("../app/store", () => mockStore);
@@ -62,7 +62,7 @@ describe("Given I am connected as an employee", () => {
       const windowIcon = screen.getByTestId("icon-window");
       expect(windowIcon).toBeTruthy();
     });
-    describe("When I click on the submit button", () => {
+    describe("When I click on the submit button ansd all input ", () => {
       test("Then, it should render the page Bills", () => {
         document.body.innerHTML = NewBillUI();
         const onNavigate = (pathname) => {
@@ -119,48 +119,27 @@ describe("Given I am connected as an employee", () => {
   });
 });
 
-/* test d'intégration POST*/
-describe("Given I'm a user connected as employee", () => {
-  describe("When I send a new Bill", () => {
-    test("fetches bills from mock API Post", async () => {
-      const getSpy = jest.spyOn(mockStore, "bills");
-      const newBill = {
-        id: "47qAXb6fIm2zOKkLzMro",
-        vat: "80",
-        fileUrl:
-          "https://test.storage.tld/v0/b/billable-677b6.a…f-1.jpg?alt=media&token=c1640e12-a24b-4b11-ae52-529112e9602a",
-        status: "pending",
-        type: "Hôtel et logement",
-        commentary: "séminaire billed",
-        name: "encore",
-        fileName: "preview-facture-free-201801-pdf-1.jpg",
-        date: "2004-04-04",
-        amount: 400,
-        commentAdmin: "ok",
-        email: "a@a",
+// POST Test
+describe("Given I am connected as an employee", () => {
+  describe("When I create a new valid bill", () => {
+    test("Then the system should add it to the dashboard", async () => {
+      const bill = {
+        type: "Restauration",
+        name: "test Bill",
+        date: "2022-02-22",
+        amount: 45,
+        vat: 50,
         pct: 20,
+        fileUrl: "url.jpg",
+        fileName: "test.jpg",
       };
-      const bills = await mockStore.bills(newBill);
+
+      jest.mock("../app/Store");
+      Store.bills = () => ({ bill, post: jest.fn().mockResolvedValue() });
+      const getSpy = jest.spyOn(Store, "bills");
+      const postBill = Store.bills(bill);
       expect(getSpy).toHaveBeenCalledTimes(1);
-      expect((await bills.list()).length).toBe(4);
-    });
-    describe("When an error occurs on API", () => {
-      test("fetches bills from an API and fails with 404 message error", async () => {
-        mockStore.bills.mockImplementationOnce(() => {
-          Promise.reject(new Error("Erreur 404"));
-        });
-        document.body.innerHTML = BillsUI({ error: "Erreur 404" });
-        const errorMessage = await screen.getByText(/Erreur 404/);
-        expect(errorMessage).toBeTruthy();
-      });
-      test("fetches messages from an API and fails with 500 message error", async () => {
-        mockStore.bills.mockImplementationOnce(() => {
-          Promise.reject(new Error("Erreur 500"));
-        });
-        document.body.innerHTML = BillsUI({ error: "Erreur 500" });
-        const errorMessage = await screen.getByText(/Erreur 500/);
-        expect(errorMessage).toBeTruthy();
-      });
+      expect(postBill.bill).toEqual(bill);
     });
   });
 });

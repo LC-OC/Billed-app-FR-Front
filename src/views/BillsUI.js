@@ -20,16 +20,13 @@ const row = (bill) => {
 };
 
 const rows = (data) => {
-  if (data && data.length) {
-    console.log(data);
-    console.log(data.length);
-    const antiChrono = (a, b) => (a.date < b.date ? 1 : -1);
-    data.sort(antiChrono);
-  }
   return data && data.length ? data.map((bill) => row(bill)).join("") : "";
 };
 
 export default ({ data: bills, loading, error }) => {
+  if (bills && bills.length) {
+    bills.sort((a, b) => new Date(b.date) - new Date(a.date));
+  }
   const modal = () => `
     <div class="modal fade" id="modaleFile" data-testid="modaleFile" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-lg" role="document">

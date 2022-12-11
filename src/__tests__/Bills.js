@@ -103,31 +103,52 @@ describe("Given I am connected as an employee", () => {
 });
 
 /* test d'intégration GET*/
-describe("Given I'm a user connected as Employee", () => {
-  describe("When I navigate to Bills", () => {
-    test("fetches bills from mock API GET", async () => {
-      const getSpy = jest.spyOn(mockStore, "bills");
-      const bills = await mockStore.bills();
-      expect(getSpy).toHaveBeenCalledTimes(1);
-      expect((await bills.list()).length).toBe(4);
+describe("When Employee Navigate on Bills Dashbord", () => {
+  beforeEach(() => {
+    jest.spyOn(mockStore, "bills");
+    Object.defineProperty(window, "localStorage", {
+      value: localStorageMock,
     });
-    describe("When an error occurs on API", () => {
-      test("fetches bills from an API and fails with 404 message error", async () => {
-        mockStore.bills.mockImplementationOnce(() => {
-          Promise.reject(new Error("Erreur 404"));
-        });
-        document.body.innerHTML = BillsUI({ error: "Erreur 404" });
-        const errorMessage = await screen.getByText(/Erreur 404/);
-        expect(errorMessage).toBeTruthy();
-      });
-      test("fetches messages from an API and fails with 500 message error", async () => {
-        mockStore.bills.mockImplementationOnce(() => {
-          Promise.reject(new Error("Erreur 500"));
-        });
-        document.body.innerHTML = BillsUI({ error: "Erreur 500" });
-        const errorMessage = await screen.getByText(/Erreur 500/);
-        expect(errorMessage).toBeTruthy();
-      });
+    window.localStorage.setItem(
+      "user",
+      JSON.stringify({
+        type: "Employee",
+        email: "a@a",
+      })
+    );
+    const root = document.createElement("div");
+    root.setAttribute("id", "root");
+    document.body.appendChild(root);
+    router();
+  });
+  test("fetches bills from API Get", async () => {
+    const bills = await mockStore.bills().list();
+    expect(bills.length).toBe(4);
+  });
+  test("fetches bills from an API and fails with 404 message error", async () => {
+    mockStore.bills.mockImplementationOnce(() => {
+      return {
+        list: () => {
+          return Promise.reject(new Error("Erreur 404"));
+        },
+      };
     });
+    window.onNavigate(ROUTES_PATH.Bills);
+    await new Promise(process.nextTick);
+    const message = await screen.getByText(/Erreur 404/);
+    expect(message).toBeTruthy();
+  });
+  test("fetches messages from an API and fails with 500 message error", async () => {
+    mockStore.bills.mockImplementationOnce(() => {
+      return {
+        list: () => {
+          return Promise.reject(new Error("Erreur 500"));
+        },
+      };
+    });
+    window.onNavigate(ROUTES_PATH.Bills);
+    await new Promise(process.nextTick);
+    const message = await screen.getByText(/Erreur 500/);
+    expect(message).toBeTruthy();
   });
 });
