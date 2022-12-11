@@ -62,7 +62,7 @@ describe("Given I am connected as an employee", () => {
       const windowIcon = screen.getByTestId("icon-window");
       expect(windowIcon).toBeTruthy();
     });
-    describe("When I click on the submit button ansd all input ", () => {
+    describe("When I click on the submit button ", () => {
       test("Then, it should render the page Bills", () => {
         document.body.innerHTML = NewBillUI();
         const onNavigate = (pathname) => {
