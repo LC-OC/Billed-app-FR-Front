@@ -47,6 +47,7 @@ export default class {
         .bills()
         .list()
         .then((snapshot) => {
+          console.log(snapshot);
           snapshot = snapshot.filter(function (a) {
             return a.name !== null;
           });
@@ -54,10 +55,11 @@ export default class {
             if (e.fileName == "null") {
               e.fileName = "Format du justificatif invalide";
             }
-            console.log(e.date);
           });
           const bills = snapshot
+            //  test => bills should be ordered from earliest to latest
             .sort((a, b) => new Date(b.date) - new Date(a.date))
+            //
             .map((doc) => {
               try {
                 return {

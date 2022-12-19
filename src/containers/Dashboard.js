@@ -57,6 +57,7 @@ export const card = (bill) => {
 };
 
 export const cards = (bills) => {
+  // format justificatif invalide
   bills.map((e) => {
     if (e.fileName == "null" || e.commentAdmin == "null") {
       e.fileName = "Format du justificatif invalide";
@@ -65,6 +66,7 @@ export const cards = (bills) => {
       e.commentAdmin = "";
     }
   });
+  //
   return bills && bills.length ? bills.map((bill) => card(bill)).join("") : "";
 };
 
@@ -102,16 +104,19 @@ export default class {
       );
     if (typeof $("#modaleFileAdmin1").modal === "function")
       $("#modaleFileAdmin1").modal("show");
+    // format justificatif invalide
     if (billUrl == "http://localhost:5678/null") {
       let imgBillError = document.getElementById("imgBillError");
       imgBillError.src = "";
       imgBillError.alt = "Format du justificatif invalide";
     }
+    //
   };
 
   handleEditTicket(e, bill, bills) {
     if (this.counter === undefined || this.id !== bill.id) this.counter = 0;
     if (this.id === undefined || this.id !== bill.id) this.id = bill.id;
+    // dark background on click bill in list
     bills.forEach((b) => {
       $(`#open-bill${b.id}`).css({ background: "#0D5AE5" });
     });
@@ -119,12 +124,10 @@ export default class {
       $(`#open-bill${bill.id}`).css({ background: "#2A2B35" });
       $(".dashboard-right-container div").html(DashboardFormUI(bill));
       $(".vertical-navbar").css({ height: "150vh" });
-      console.log("add css");
       this.counter++;
     } else {
       $(`#open-bill${bill.id}`).css({ background: "#0D5AE5" }),
-        console.log("remove css");
-      $(".dashboard-right-container div").html(`
+        $(".dashboard-right-container div").html(`
         <div id="big-billed-icon" data-testid="big-billed-icon"> ${BigBilledIcon} </div>
       `);
       $(".vertical-navbar").css({ height: "120vh" });
@@ -169,13 +172,13 @@ export default class {
       $(`#status-bills-container${this.index}`).html("");
       this.counter++;
     }
-
+    // bug hunt dashboard - pouvoir déplier plusieurs listes et consulter les tickets de chacune des deux listes
     filteredBills(bills, getStatus(this.index)).forEach((bill) => {
       $(`#open-bill${bill.id}`).click((e) =>
         this.handleEditTicket(e, bill, bills)
       );
     });
-
+    //
     /*bills.forEach((bill) => {
       $(`#open-bill${bill.id}`).click((e) =>
         this.handleEditTicket(e, bill, bills)

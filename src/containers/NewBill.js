@@ -39,6 +39,7 @@ export default class NewBill {
       .then(({ fileUrl, key }) => {
         this.billId = key;
         this.fileUrl = fileUrl;
+        // format justificatif valide/invalide
         function fileValidation() {
           let fileValue = fileInput.value;
           let allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
@@ -56,6 +57,7 @@ export default class NewBill {
         }
         let fileInput = document.querySelector(`input[data-testid="file"]`);
         fileInput.addEventListener("change", fileValidation());
+        //
         this.fileName = fileName;
       })
       .catch((error) => console.error(error));

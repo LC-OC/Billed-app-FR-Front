@@ -142,4 +142,45 @@ describe("Given I am connected as an employee", () => {
       expect(postBill.bill).toEqual(bill);
     });
   });
+  describe("When an error occurs on API", () => {
+    beforeEach(() => {
+      jest.spyOn(mockStore, "bills");
+
+      const root = document.createElement("div");
+      root.setAttribute("id", "root");
+      document.body.appendChild(root);
+      router();
+    });
+    it("should fetches messages from an API and fails with 404 message error", async () => {
+      mockStore.bills.mockImplementationOnce(() => {
+        return {
+          list: () => {
+            return Promise.reject(new Error("Erreur 404"));
+          },
+        };
+      });
+
+      await new Promise(process.nextTick);
+
+      document.body.innerHTML = BillsUI({ error: "Erreur 404" });
+      const message = screen.getByText(/Erreur 404/);
+      expect(message).toBeTruthy();
+    });
+
+    it("should fetches messages from an API and fails with 500 message error", async () => {
+      mockStore.bills.mockImplementationOnce(() => {
+        return {
+          list: () => {
+            return Promise.reject(new Error("Erreur 500"));
+          },
+        };
+      });
+
+      await new Promise(process.nextTick);
+
+      document.body.innerHTML = BillsUI({ error: "Erreur 500" });
+      const message = screen.getByText(/Erreur 500/);
+      expect(message).toBeTruthy();
+    });
+  });
 });
