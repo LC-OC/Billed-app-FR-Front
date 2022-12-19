@@ -159,14 +159,11 @@ describe("Given I am connected as an employee", () => {
           },
         };
       });
-
       await new Promise(process.nextTick);
-
       document.body.innerHTML = BillsUI({ error: "Erreur 404" });
       const message = screen.getByText(/Erreur 404/);
       expect(message).toBeTruthy();
     });
-
     it("should fetches messages from an API and fails with 500 message error", async () => {
       mockStore.bills.mockImplementationOnce(() => {
         return {
@@ -175,9 +172,7 @@ describe("Given I am connected as an employee", () => {
           },
         };
       });
-
       await new Promise(process.nextTick);
-
       document.body.innerHTML = BillsUI({ error: "Erreur 500" });
       const message = screen.getByText(/Erreur 500/);
       expect(message).toBeTruthy();
