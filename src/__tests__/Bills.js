@@ -137,7 +137,11 @@ describe("When Employee Navigate on Bills Dashbord", () => {
     });
     window.onNavigate(ROUTES_PATH.Bills);
     await new Promise(process.nextTick);
+<<<<<<< HEAD
     const message = screen.getByText(/Erreur 404/);
+=======
+    const message = await screen.getByText(/Erreur 404/);
+>>>>>>> e7247a9c6a61f57939cd053891f4b5aa085b1019
     expect(message).toBeTruthy();
   });
   test("fetches messages from an API and fails with 500 message error", async () => {
@@ -150,7 +154,11 @@ describe("When Employee Navigate on Bills Dashbord", () => {
     });
     window.onNavigate(ROUTES_PATH.Bills);
     await new Promise(process.nextTick);
+<<<<<<< HEAD
     const message = screen.getByText(/Erreur 500/);
+=======
+    const message = await screen.getByText(/Erreur 500/);
+>>>>>>> e7247a9c6a61f57939cd053891f4b5aa085b1019
     expect(message).toBeTruthy();
   });
 });
