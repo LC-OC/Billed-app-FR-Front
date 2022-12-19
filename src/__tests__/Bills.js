@@ -120,7 +120,6 @@ describe("Given I am connected as an employee", () => {
         router();
       });
 
-      // test de l'erreur 404 !
       test("fetches bills from an API and fails with 404 message error", async () => {
         mockStore.bills.mockImplementationOnce(() => {
           return {
@@ -131,11 +130,10 @@ describe("Given I am connected as an employee", () => {
         });
         window.onNavigate(ROUTES_PATH.Bills);
         await new Promise(process.nextTick);
-        const message = await screen.getByText(/Erreur 404/);
+        const message = screen.getByText(/Erreur 404/);
         expect(message).toBeTruthy();
       });
 
-      // TEST de l'erreur server 500
       test("fetches messages from an API and fails with 500 message error", async () => {
         mockStore.bills.mockImplementationOnce(() => {
           return {
@@ -147,7 +145,7 @@ describe("Given I am connected as an employee", () => {
 
         window.onNavigate(ROUTES_PATH.Bills);
         await new Promise(process.nextTick);
-        const message = await screen.getByText(/Erreur 500/);
+        const message = screen.getByText(/Erreur 500/);
         expect(message).toBeTruthy();
       });
     });
