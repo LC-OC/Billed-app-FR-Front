@@ -101,6 +101,8 @@ describe("Given I am connected as an employee", () => {
       userEvent.click(buttonNewBill);
       expect(handleClickNewBill).toHaveBeenCalled();
     });
+
+    // test d'intégration GET
     describe("When an error occurs on API", () => {
       beforeEach(() => {
         jest.spyOn(mockStore, "bills");

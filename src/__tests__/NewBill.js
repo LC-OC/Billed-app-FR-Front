@@ -119,7 +119,7 @@ describe("Given I am connected as an employee", () => {
   });
 });
 
-// POST Test
+// test d'intégration POST
 describe("Given I am connected as an employee", () => {
   describe("When I create a new valid bill", () => {
     test("Then the system should add it to the dashboard", async () => {
